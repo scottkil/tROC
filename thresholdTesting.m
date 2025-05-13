@@ -1,13 +1,16 @@
 %% Loading data
-fpath = 'C:\Users\Scott\Desktop\DetectionTesting\20240129.adicht'; % path to data file
-% EEG = abfLoadEEG(fpath,1,1000); % specifically for loading .abf files
-% EEG = adiLoadEEG(fpath,14,500);
-CTX = adiLoadEEG(fpath,1,1000);
-% EMG = adiLoadEEG(fpath,15,500); %EMG signal
+fpath = 'exampleInput.adicht'; % full filepath to .adicht file
+saveName = 'thresholTestResults.mat'; % full filepath where you'd like to save the output
+sample_blank_time = 8; % time (seconds) after threshold has been crossed when sampling is paused (like a "refactory period")
+eegChannel = 1; % channel you want to use for event detection 
+targetFS = 1000; % sampling frequency you'd like to use for the EEG data (1000Hz is default) 
+minThresh = 0; % value to use for threshold-based detection (most sensitive threshold)
+maxThresh = -1026; % max threshold (most conservative threhsold)
+spaceBTWNthresh = 100; % gap between each threshold tested
 
 %% Check for "seizures" (thresholding crossings) at multiple levels
-threshList = linspace(0,-1026,100);    % list of threshold values to try
-sample_blank_time = 8;          % time, in seconds, after threshold has been crossed when sampling is paused (like a "refactory period")
+CTX = adiLoadEEG(fpath,eegChannel,targetFS);
+threshList = linspace(minThresh,maxThresh,spaceBTWNthresh);    % list of threshold values to try
 blankOutWin = CTX.finalFS *sample_blank_time; % window in # of samples units
 for ii = 1:numel(threshList)    % loop over the different thresholds
     loopClock = tic;
@@ -41,4 +44,4 @@ for ii = 1:numel(threshList)    % loop over the different thresholds
 end
 
 %% Save
-save("20240129_thresholdTestResults.mat",'seizIndies',"threshList",'-v7.3');
+save(saveName,'seizIndies',"threshList",'-v7.3');

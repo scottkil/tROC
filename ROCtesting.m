@@ -1,5 +1,8 @@
-%% === Load in curated seizures here === %%
+%% === Set paths to curated seizures and threshold-detected seizures files here === %%
 pathToSeizures = '';  % PATH TO YOUR CURATED_SEIZURES .MAT FILE HERE
+pathToThreshTestResults = ''; % PATH TO THRESHOLD-DETECTED SEIZURES (OUTPUT OF thresholdTesting.m)
+%% === Handle Inputs === %
+load(pathToThreshTestResults,'seizIndies',"threshList");
 load(pathToSeizures,'curated_seizures');
 oness = strcmp({seizures.type},'1');
 twoss = strcmp({seizures.type},'2');
@@ -16,7 +19,7 @@ end
 fprintf('Found %d ground truth seizures\n',GTszi)
 
 %%
-% find how many detected seizures correspodn to actual seizures
+% find how many detected seizures correspond to actual seizures
 FP = {}; % initialize the FALSE POSITIVE cell array (one element per test condition/threshold level)
 TP = {};
 
